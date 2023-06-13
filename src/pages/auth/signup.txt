@@ -1,0 +1,12 @@
+import SignupCard from "@/components/SignupCard";
+import AuthLayout from "@/layouts/AuthLayout";
+
+const AuthPage = () => {
+  return (
+    <AuthLayout>
+      <SignupCard />
+    </AuthLayout>
+  );
+};
+
+export default AuthPage;
