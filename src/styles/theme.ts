@@ -1,11 +1,12 @@
 import { extendTheme } from "@chakra-ui/react";
 
 const colors = {
-  primary: "#FFCC41",
-  secondary: "#2d232e",
+  primary: "#FFD86C",
+  secondary: "#242529",
   white: "#ffffff",
-  t_dark: "#474448",
-  t_light: "#534b52",
+  t_dark: "#1D1E21",
+  t_light: "#353638",
+  t_light2: "#F2F2F2",
 };
 
 const components = {
