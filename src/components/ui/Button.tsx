@@ -9,7 +9,7 @@ import { ButtonHTMLAttributes, forwardRef } from "react";
 interface CustomButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
   variant: string;
-  flex: number;
+  flex?: number;
 }
 
 const CustomButton = forwardRef<HTMLButtonElement, CustomButtonProps>(
@@ -19,6 +19,8 @@ const CustomButton = forwardRef<HTMLButtonElement, CustomButtonProps>(
   ) => {
     return (
       <Button
+        h={"full"}
+        w={"full"}
         variant={variant}
         ref={ref}
         {...props}

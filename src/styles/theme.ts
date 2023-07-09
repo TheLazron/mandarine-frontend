@@ -31,8 +31,8 @@ const components = {
 };
 
 const fonts = {
-  heading: `'Mansalva', sans-serif`,
-  body: `'Inter', sans-serif`,
+  heading: `'Inter variable', sans-serif`,
+  body: `'Inter Variable', sans-serif`,
 };
 
 export const customTheme = extendTheme({ colors, components, fonts });

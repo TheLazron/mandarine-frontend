@@ -1,6 +1,6 @@
 import "../styles/globals.css";
 import "@fontsource/mansalva";
-import "@fontsource-variable/roboto-flex/";
+import "@fontsource-variable/inter";
 import { ChakraProvider } from "@chakra-ui/react";
 import type { AppProps } from "next/app";
 import { customTheme } from "../styles/theme";

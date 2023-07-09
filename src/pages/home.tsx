@@ -1,4 +1,6 @@
 import LobbyCard from "@/components/LobbyCard";
+import ProfileCard from "@/components/ProfileCard";
+import SessionsCard from "@/components/SessionsCard";
 import { Box, Flex, Heading, Grid, GridItem } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect } from "react";
@@ -17,7 +19,7 @@ const Dashboard = () => {
 
   const handleSubmit = async () => {
     console.log("hello");
-    const response = await axios.get("http://localhost:3010/test", {
+    const response = await axios.post("http://localhost:3010/create-lobby", {
       withCredentials: true,
     });
   };
@@ -40,11 +42,12 @@ const Dashboard = () => {
         min-minHeight={"100vh"}
         height={"100vh"}
         overflow={"auto"}
-        p={16}
       >
-        <Heading>Mandarine</Heading>
+        <Heading px={16} mt={12} color="white" as="h3" fontWeight={"semibold"}>
+          Mandarine
+        </Heading>
         <Grid
-          bgColor={"red"}
+          p={16}
           h={"full"}
           w={"full"}
           templateColumns={{
@@ -56,7 +59,7 @@ const Dashboard = () => {
             base: "repeat(3, auto)",
             md: "repeat(2, auto)",
           }}
-          gap={4}
+          gap={12}
           bg="secondary"
         >
           <GridItem
@@ -69,13 +72,13 @@ const Dashboard = () => {
             colSpan={{ base: 2, sm: 2, md: 2 }}
             rowSpan={{ base: 1, md: 1 }}
           >
-            <LobbyCard />
+            <ProfileCard />
           </GridItem>
           <GridItem
             colSpan={{ base: 2, sm: 5, md: 5 }}
             rowSpan={{ base: 1, md: 2 }}
           >
-            <LobbyCard />
+            <SessionsCard />
           </GridItem>
         </Grid>
       </Box>

@@ -47,14 +47,14 @@ const SignupCard = (): JSX.Element => {
 
     try {
       console.log(data);
-      const response = await axios.post("http://localhost:3010/login", {
+      const response = await axios.post("http://localhost:3010/signup", {
         username: data.username,
         password: data.password,
         email: data.email,
       });
 
       if (response.status === 200) {
-        router.push("/login");
+        router.push("/auth/login");
       }
     } catch (err) {
       toast({

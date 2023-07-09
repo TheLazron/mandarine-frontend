@@ -1,0 +1,23 @@
+/* For webkit-based browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+  background-color: #363636; /* Background color of the scrollbar */
+  border-radius: 4px; /* Rounded corners */
+}
+
+/* For the scrollbar track */
+::-webkit-scrollbar-track {
+  background-color: #363636;
+  border-radius: 4px; /* Background color of the track */
+}
+
+/* For the scrollbar thumb (the draggable part) */
+::-webkit-scrollbar-thumb {
+  background-color: #ffd86c; /* Color of the thumb */
+  border-radius: 4px; /* Rounded corners */
+}
+
+/* On hover, apply different styles to the scrollbar thumb */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #ffd86c; /* Color of the thumb on hover */
+}
