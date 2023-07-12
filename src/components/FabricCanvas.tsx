@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
+import { toByteArray } from "base64-js";
 import { FabricJSCanvas, useFabricJSEditor } from "fabricjs-react";
 import { Box, Button } from "@chakra-ui/react";
 import { log } from "console";
+import axios from "axios";
 const FabricCanvas = () => {
   const { editor, onReady } = useFabricJSEditor();
   const [previewImage, setPreviewImage] = useState<string>("");
@@ -10,6 +12,35 @@ const FabricCanvas = () => {
   };
   const onAddRectangle = () => {
     editor!.addRectangle();
+  };
+
+  const exportPNG = () => {
+    console.log("sending image");
+
+    const canvas = editor?.canvas; // Assuming you have the Fabric.js canvas instance
+    if (canvas) {
+      const dataURL = canvas.toDataURL({
+        format: "png",
+        multiplier: 2,
+      });
+
+      const base64Data = dataURL.split(",")[1];
+      const binaryData = toByteArray(base64Data);
+      axios
+        .post("http://localhost:3010/upload-image/J6KHTWXM", binaryData, {
+          headers: {
+            "Content-Type": "application/octet-stream",
+          },
+        })
+        .then((response) => {
+          console.log("sent image successfully");
+
+          console.log("Response:", response.data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
   };
   const containerRef = useRef<HTMLDivElement>(null);
   const [color, setColor] = useState("#000000");
@@ -53,7 +84,7 @@ const FabricCanvas = () => {
       >
         <FabricJSCanvas className="sample-canvas" onReady={onReady} />
       </Box>
-      {/* <Button onClick={downloadImage}>Download Image</Button> */}
+      <Button onClick={exportPNG}>Submit Image</Button>
     </Box>
   );
 };

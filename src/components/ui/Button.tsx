@@ -19,6 +19,7 @@ const CustomButton = forwardRef<HTMLButtonElement, CustomButtonProps>(
   ) => {
     return (
       <Button
+        shadow={"none"}
         h={"full"}
         w={"full"}
         variant={variant}

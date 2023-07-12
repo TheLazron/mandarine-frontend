@@ -1,11 +1,38 @@
 import LobbyDetailsCard from "@/components/LobbyDetailsCard";
 import LobbyMembers from "@/components/LobbyMembers";
-import CustomButton from "@/components/ui/Button";
-import LobbyAvatar from "@/components/ui/LobbyAvatar";
-
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
+import axios from "axios";
+import { useState } from "react";
+import { useRouter } from "next/router";
+import { useRecoilValue } from "recoil";
+import { userState } from "./_app";
 
 const LobbyPage = (): JSX.Element => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const user = useRecoilValue(userState);
+  const [sessionName, setSessionName] = useState<string | null>(null);
+  const router = useRouter();
+
+  const startSession = async () => {
+    try {
+      const requestBody = sessionName ? { name: sessionName } : {};
+      const response = await axios.post(
+        `http://localhost:3010/start-session/${user.currentRoomCode}`,
+        { name: sessionName },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        router.push("/rounddasht");
+      } else {
+        console.log("Request was not successful.");
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  };
   return (
     <Box
       _before={{
@@ -33,6 +60,7 @@ const LobbyPage = (): JSX.Element => {
         position="fixed"
         zIndex={4}
         boxShadow="5rem 2rem 150rem 10rem rgba(0, 0, 0, 0.8)"
+        onClick={startSession}
       >
         Start Session
       </Button>
@@ -50,8 +78,9 @@ const LobbyPage = (): JSX.Element => {
         gap={6}
       >
         <Box w="full">
-          <LobbyDetailsCard />
+          <LobbyDetailsCard setSessionName={setSessionName} />
         </Box>
+
         <Box flex={1} w="full">
           <LobbyMembers />
         </Box>

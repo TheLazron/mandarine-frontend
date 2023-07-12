@@ -9,20 +9,17 @@ import {
   Button,
   Spinner,
 } from "@chakra-ui/react";
-import {
-  IconArrowUpRight,
-  IconCopy,
-  IconPlus,
-  IconSend,
-} from "@tabler/icons-react";
+import { IconArrowUpRight, IconPlus, IconSend } from "@tabler/icons-react";
 import { useState } from "react";
 import CustomDivider from "./ui/CustomDivier";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { useRecoilState } from "recoil";
 import CopyButton from "./ui/CopyButton";
+import { userState } from "@/pages/_app";
 
 const LobbyCard = () => {
-  const [generatedCode, setGeneratedCode] = useState("");
+  const [user, setUser] = useRecoilState(userState);
   const [enteredCode, setEnteredCode] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -44,7 +41,7 @@ const LobbyCard = () => {
   };
 
   const createLobby = async () => {
-    setLoading(true); // Set loading state to true
+    setLoading(true);
 
     try {
       const response = await axios.post(
@@ -54,7 +51,13 @@ const LobbyCard = () => {
           withCredentials: true,
         }
       );
-      setGeneratedCode(response.data.id);
+      console.log("creae lobby response: ", response.data);
+
+      setUser((user) => ({
+        ...user,
+        currentRoomCode: response.data.id,
+        currentRoomName: response.data.sessionName,
+      }));
     } catch (error) {
       console.error(error);
     } finally {
@@ -72,6 +75,7 @@ const LobbyCard = () => {
           withCredentials: true,
         }
       );
+      router.push("/lobby");
     } catch (error) {
       console.error(error);
     } finally {
@@ -98,7 +102,7 @@ const LobbyCard = () => {
         <InputGroup flex={4} size="md" flexDirection={"column"}>
           <Input
             letterSpacing="0.5em"
-            value={generatedCode}
+            value={user.currentRoomCode}
             h={"4rem"}
             rounded={"2xl"}
             fontSize={"2xl"}
@@ -107,8 +111,7 @@ const LobbyCard = () => {
             sx={inputStyle}
           />
           <InputRightElement h="full" w="4rem" cursor={"pointer"}>
-            {/* <IconCopy color="white" size={"30px"} /> */}
-            <CopyButton valueToCopy={generatedCode} />
+            <CopyButton valueToCopy={user.currentRoomCode} />
           </InputRightElement>
         </InputGroup>
         <Button
@@ -133,7 +136,7 @@ const LobbyCard = () => {
         >
           {loading ? (
             <Spinner />
-          ) : generatedCode ? (
+          ) : user.currentRoomCode ? (
             <IconPlus color="white" size={"30px"} />
           ) : (
             <IconSend color="white" size={"30px"} />
