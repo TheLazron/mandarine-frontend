@@ -2,30 +2,46 @@ import LobbyDetailsCard from "@/components/LobbyDetailsCard";
 import LobbyMembers from "@/components/LobbyMembers";
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useRecoilValue } from "recoil";
-import { userState } from "./_app";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { sessionState, userState } from "./_app";
+import { useSocket } from "@/utils/useSocket";
 
 const LobbyPage = (): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false);
-  const user = useRecoilValue(userState);
+  const [user, setUser] = useRecoilState(userState);
+  const [session, setSession] = useRecoilState(sessionState);
   const [sessionName, setSessionName] = useState<string | null>(null);
   const router = useRouter();
 
   const startSession = async () => {
     try {
       const requestBody = sessionName ? { name: sessionName } : {};
+      console.log("requesting session creation with name", sessionName);
       const response = await axios.post(
         `http://localhost:3010/start-session/${user.currentRoomCode}`,
-        { name: sessionName },
+        requestBody,
         {
           withCredentials: true,
         }
       );
-
       if (response.status === 200) {
+        setUser((user) => ({
+          ...user,
+          role: "teacher",
+          currentRoomName: sessionName!,
+        }));
+        console.log("response", response.data);
+        setSession((session) => {
+          return {
+            ...session,
+            currentRoundNumber: 1,
+          };
+        });
         router.push("/rounddasht");
+
+        // router.push("/rounddasht");
       } else {
         console.log("Request was not successful.");
       }
@@ -33,6 +49,27 @@ const LobbyPage = (): JSX.Element => {
       console.error("An error occurred:", error);
     }
   };
+  const socket = useSocket();
+  useEffect(() => {
+    console.log("seeting up startSession handler");
+    socket.on("start-session", (data) => {
+      console.log("are we inside", user.role);
+      setUser((user) => ({
+        ...user,
+        currentRoomName: data,
+      }));
+      if (user.role != "teacher") {
+        console.log("Redirecting student", data);
+        router.push("/rounddashs");
+        setSession((session) => {
+          return {
+            ...session,
+            currentRoundNumber: 1,
+          };
+        });
+      }
+    });
+  }, []);
   return (
     <Box
       _before={{
@@ -78,7 +115,10 @@ const LobbyPage = (): JSX.Element => {
         gap={6}
       >
         <Box w="full">
-          <LobbyDetailsCard setSessionName={setSessionName} />
+          <LobbyDetailsCard
+            sessionName={sessionName!}
+            setSessionName={setSessionName}
+          />
         </Box>
 
         <Box flex={1} w="full">

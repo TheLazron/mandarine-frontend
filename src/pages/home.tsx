@@ -1,22 +1,12 @@
 import LobbyCard from "@/components/LobbyCard";
 import ProfileCard from "@/components/ProfileCard";
 import SessionsCard from "@/components/SessionsCard";
-import { Box, Flex, Heading, Grid, GridItem } from "@chakra-ui/react";
+import { Box, Heading, Grid, GridItem } from "@chakra-ui/react";
 import axios from "axios";
-import { useEffect } from "react";
+import { useRecoilValue } from "recoil";
+import { userState } from "./_app";
 
 const Dashboard = () => {
-  // useEffect(() => {
-  //   const testGet = async () => {
-  //     const response = await axios.get("http://localhost:3010/test", {
-  //       withCredentials: true,
-  //     });
-  //     console.log(response.data);
-  //   };
-
-  //   testGet();
-  // }, []);
-
   const handleSubmit = async () => {
     console.log("hello");
     const response = await axios.post("http://localhost:3010/create-lobby", {

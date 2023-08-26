@@ -1,10 +1,20 @@
-import DrawingDash from "@/components/teacherDashboard/DrawingDash";
-import FabricCanvas from "@/components/FabricCanvas";
+import DrawingDash from "@/components/teacherDashboard/TeacherDrawingDash";
 import StudentsDrawer from "@/components/teacherDashboard/StudentsDrawer";
 import StudentsTab from "@/components/teacherDashboard/StudentsTab";
 import { Box, Grid, GridItem } from "@chakra-ui/react";
+import { atom, useRecoilState } from "recoil";
 
-const RoundDashT = () => {
+export const teacherDashState = atom({
+  key: "teacherDashState",
+  default: {
+    roundChangeCall: false,
+    imageSubmitCall: false,
+  },
+});
+
+const TeacherDrawingDash = () => {
+  const [teacherstate, setteacherstate] = useRecoilState(teacherDashState);
+
   return (
     <Box
       _before={{
@@ -53,7 +63,10 @@ const RoundDashT = () => {
           colSpan={{ base: 5, sm: 5, md: 3 }}
           rowSpan={{ base: 1, md: 1 }}
         >
-          <DrawingDash />
+          <DrawingDash
+            clearCall={teacherstate.roundChangeCall}
+            submitCall={teacherstate.imageSubmitCall}
+          />
         </GridItem>
         <GridItem
           boxShadow="0 0 10px 5px rgba(0, 0, 0, 0.2)"
@@ -62,7 +75,6 @@ const RoundDashT = () => {
           rowSpan={{ base: 2, md: 2 }}
           overflow={"auto"}
           display={{ base: "none", md: "block" }}
-          // rowSpan={{ base: 1, md: 2 }}
         >
           <Box>
             <StudentsTab />
@@ -73,4 +85,4 @@ const RoundDashT = () => {
   );
 };
 
-export default RoundDashT;
+export default TeacherDrawingDash;

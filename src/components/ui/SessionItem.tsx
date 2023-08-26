@@ -1,6 +1,13 @@
 import { Card, Text, Flex } from "@chakra-ui/react";
+import { format } from "date-fns";
 
-const SessionItem = () => {
+interface SessionItemProps {
+  name: string;
+  date: string;
+  duration: number;
+}
+
+const SessionItem = ({ name, date, duration }: SessionItemProps) => {
   return (
     <Card
       color="white"
@@ -17,10 +24,13 @@ const SessionItem = () => {
         alignItems={"center"}
         p={6}
       >
-        <Text>Name</Text>
-        <Text>Date</Text>
-        <Text>Characters</Text>
-        <Text>Score</Text>
+        <Text alignSelf={"flex-start"} flex={1}>
+          {name}
+        </Text>
+        <Text alignSelf={"center"} flex={1}>
+          {format(new Date(date), "dd MMM yy")}
+        </Text>
+        <Text>{`${duration} s`}</Text>
       </Flex>
     </Card>
   );

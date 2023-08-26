@@ -9,13 +9,15 @@ import {
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import CustomButton from "./ui/Button";
+import { useRecoilState } from "recoil";
 import { IconBrandGoogle } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import axios from "axios";
 
 import { useForm, SubmitHandler } from "react-hook-form";
-import socket from "@/utils/socketUtils";
+import { useSocket } from "@/utils/useSocket";
+import { userState } from "@/pages/_app";
 
 type FormValues = {
   username: string;
@@ -23,7 +25,9 @@ type FormValues = {
 };
 
 const LoginCard = (): JSX.Element => {
+  const socket = useSocket();
   const router = useRouter();
+  const [user, setUser] = useRecoilState(userState);
   const toast = useToast();
   const {
     register,
@@ -46,6 +50,14 @@ const LoginCard = (): JSX.Element => {
         }
       );
       console.log("res", response);
+      setUser((user) => ({
+        ...user,
+        email: response.data.user.email,
+        id: response.data.user.id,
+        name: response.data.user.username,
+        joiningDate: response.data.user.joiningDate,
+        sessionCount: response.data.sessionCount,
+      }));
 
       if (response.status === 200) {
         socket.on("message", (data) => {

@@ -6,8 +6,13 @@ interface AuthLayoutProps {
 
 const AuthLayout = ({ children }: AuthLayoutProps): JSX.Element => {
   return (
-    <Flex h={"100vh"}>
-      <Flex flex={1} justifyContent={"center"} alignItems={"center"}>
+    <Flex h={"100vh"} color="white">
+      <Flex
+        flex={1}
+        justifyContent={"center"}
+        alignItems={"center"}
+        bgColor={"secondary"}
+      >
         {children}
       </Flex>
       <Flex

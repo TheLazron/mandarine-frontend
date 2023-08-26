@@ -1,19 +1,29 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
+import { useRecoilValue } from "recoil";
+import { userState } from "@/pages/_app";
 import { toByteArray } from "base64-js";
 import { FabricJSCanvas, useFabricJSEditor } from "fabricjs-react";
 import { Box, Button } from "@chakra-ui/react";
-import { log } from "console";
 import axios from "axios";
-const FabricCanvas = () => {
-  const { editor, onReady } = useFabricJSEditor();
-  const [previewImage, setPreviewImage] = useState<string>("");
-  const onAddCircle = () => {
-    editor!.addCircle();
-  };
-  const onAddRectangle = () => {
-    editor!.addRectangle();
-  };
 
+const FabricCanvas = forwardRef((props, ref) => {
+  useImperativeHandle(ref, () => ({
+    refreshCanvas() {
+      prepareCanvas();
+    },
+    submitImage() {
+      exportPNG();
+    },
+  }));
+
+  const { editor, onReady } = useFabricJSEditor();
+  const user = useRecoilValue(userState);
   const exportPNG = () => {
     console.log("sending image");
 
@@ -27,11 +37,15 @@ const FabricCanvas = () => {
       const base64Data = dataURL.split(",")[1];
       const binaryData = toByteArray(base64Data);
       axios
-        .post("http://localhost:3010/upload-image/J6KHTWXM", binaryData, {
-          headers: {
-            "Content-Type": "application/octet-stream",
-          },
-        })
+        .post(
+          `http://localhost:3010/upload-image/${user.currentRoomCode}`,
+          binaryData,
+          {
+            headers: {
+              "Content-Type": "application/octet-stream",
+            },
+          }
+        )
         .then((response) => {
           console.log("sent image successfully");
 
@@ -56,7 +70,13 @@ const FabricCanvas = () => {
     }
   };
   useEffect(() => {
+    prepareCanvas();
+  }, [editor]);
+
+  const prepareCanvas = () => {
     if (editor && containerRef.current) {
+      console.log("prepping canvas");
+      editor.canvas.clear();
       editor!.canvas.freeDrawingBrush.color = color;
       editor!.canvas.isDrawingMode = true;
       editor!.canvas.setWidth(containerRef.current.clientWidth!);
@@ -64,7 +84,7 @@ const FabricCanvas = () => {
       editor!.canvas.setBackgroundColor("#FFFFFF", () => {});
       editor.canvas.freeDrawingBrush.width = 4;
     }
-  }, [editor, color]);
+  };
 
   const exportSVG = () => {
     const svg = editor!.canvas.toSVG();
@@ -72,9 +92,6 @@ const FabricCanvas = () => {
   };
   return (
     <Box w="full" h="full" rounded={"2xl"}>
-      {/* <Button onClick={onAddCircle}>Add circle</Button>
-      <Button onClick={onAddRectangle}>Add Rectangle</Button> */}
-
       <Box
         ref={containerRef}
         w="full"
@@ -84,9 +101,11 @@ const FabricCanvas = () => {
       >
         <FabricJSCanvas className="sample-canvas" onReady={onReady} />
       </Box>
-      <Button onClick={exportPNG}>Submit Image</Button>
+      {/* <Button onClick={exportPNG}>Submit Image</Button> */}
     </Box>
   );
-};
+});
+
+FabricCanvas.displayName = "FabricCanvas";
 
 export default FabricCanvas;

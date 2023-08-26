@@ -1,11 +1,28 @@
-import DrawingDash from "@/components/teacherDashboard/DrawingDash";
+import DrawingDash from "@/components/teacherDashboard/TeacherDrawingDash";
 import FabricCanvas from "@/components/FabricCanvas";
-import StudentsDrawer from "@/components/teacherDashboard/StudentsDrawer";
 import StudentsTab from "@/components/teacherDashboard/StudentsTab";
 import { Box, Grid, GridItem } from "@chakra-ui/react";
 import StudentPanel from "@/components/studentDashboard/StudentPanel";
+import { useSocket } from "@/utils/useSocket";
+import { useEffect, useState } from "react";
+import StudentDrawingDash from "@/components/studentDashboard/StudentDrawingDash";
 
 const RoundDashT = () => {
+  const [teacherImage, setTeacherImage] = useState<string>("");
+  const socket = useSocket();
+  useEffect(() => {
+    socket.on("teacherImage", (data) => {
+      console.log("data via custom hook", data);
+      setTeacherImage(data);
+    });
+
+    socket.on("start-round", (data) => {
+      console.log("signal to start new round");
+    });
+
+    socket.on("delete-round", (data) => {});
+  }, []);
+
   return (
     <Box
       _before={{
@@ -45,7 +62,7 @@ const RoundDashT = () => {
           colSpan={{ base: 5, sm: 5, md: 3 }}
           rowSpan={{ base: 1, md: 1 }}
         >
-          <DrawingDash />
+          <StudentDrawingDash />
         </GridItem>
         <GridItem
           //   boxShadow="0 0 10px 5px rgba(0, 0, 0, 0.2)"
@@ -57,7 +74,7 @@ const RoundDashT = () => {
           // rowSpan={{ base: 1, md: 2 }}
         >
           <Box h="full">
-            <StudentPanel />
+            <StudentPanel tImage={teacherImage} />
           </Box>
         </GridItem>
       </Grid>

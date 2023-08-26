@@ -58,6 +58,7 @@ const LobbyCard = () => {
         currentRoomCode: response.data.id,
         currentRoomName: response.data.sessionName,
       }));
+      router.push("/lobby");
     } catch (error) {
       console.error(error);
     } finally {
@@ -75,6 +76,11 @@ const LobbyCard = () => {
           withCredentials: true,
         }
       );
+      setUser((user) => ({
+        ...user,
+        currentRoomCode: response.data.id,
+        currentRoomName: response.data.sessionName,
+      }));
       router.push("/lobby");
     } catch (error) {
       console.error(error);
@@ -122,25 +128,8 @@ const LobbyCard = () => {
           w="full"
           variant="yellow"
           isLoading={loading}
-        ></Button>
-        <Button
-          onClick={() => {
-            router.push("/lobby");
-          }}
-          rounded={"2xl"}
-          flex={1}
-          h="full"
-          w="full"
-          variant="yellow"
-          isLoading={loading}
         >
-          {loading ? (
-            <Spinner />
-          ) : user.currentRoomCode ? (
-            <IconPlus color="white" size={"30px"} />
-          ) : (
-            <IconSend color="white" size={"30px"} />
-          )}
+          <IconSend color="white" size={"30px"} />
         </Button>
       </Flex>
 

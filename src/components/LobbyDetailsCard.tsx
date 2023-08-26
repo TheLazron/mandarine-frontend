@@ -21,16 +21,18 @@ const inputStyle = {
 };
 
 interface LobbtDetailsCardProps {
+  sessionName: string;
   setSessionName: (name: string) => void;
 }
 
 const LobbyDetailsCard = ({
   setSessionName,
+  sessionName,
 }: LobbtDetailsCardProps): JSX.Element => {
-  const [name, setname] = useState<string>("");
   const user = useRecoilValue(userState);
+  const [localSessionName, setLocalSessionName] = useState(sessionName);
   useEffect(() => {
-    setname(user.currentRoomName);
+    setSessionName(user.currentRoomName);
   }, []);
 
   return (
@@ -56,12 +58,12 @@ const LobbyDetailsCard = ({
           fontSize={"xl"}
           w={{ base: "90%", md: "70%" }}
           variant={"filled"}
-          value={name}
+          value={sessionName}
           sx={inputStyle}
           onChange={(e) => {
             const sessionName = e.target.value;
-            setname(sessionName);
-            setSessionName(name);
+            setLocalSessionName(sessionName);
+            setSessionName(sessionName);
           }}
           placeholder="Enter Session Name"
         />

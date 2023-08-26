@@ -1,10 +1,11 @@
 import { Card, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import LobbyAvatar from "./ui/LobbyAvatar";
-import socket from "@/utils/socketUtils";
+import { useSocket } from "@/utils/useSocket";
 
 const LobbyMembers = (): JSX.Element => {
   const [members, setMembers] = useState<Array<object>>([]);
+  const socket = useSocket();
 
   useEffect(() => {
     socket.on("newUser", (data) => {

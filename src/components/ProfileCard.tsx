@@ -1,8 +1,15 @@
-import { Card, Heading, Flex, Avatar, Box, Button } from "@chakra-ui/react";
+import { userState } from "@/pages/_app";
+import { Card, Heading, Flex, Box, Button } from "@chakra-ui/react";
 import { Text } from "@chakra-ui/react";
 import { useBreakpointValue } from "@chakra-ui/react";
+import { useRecoilValue } from "recoil";
+import { format, parseISO } from "date-fns";
+import _ from "lodash";
+import Avatar from "boring-avatars";
 
 const ProfileCard = (): JSX.Element => {
+  const user = useRecoilValue(userState);
+
   const fontSize = useBreakpointValue({
     base: "xs",
     sm: "sm",
@@ -32,14 +39,18 @@ const ProfileCard = (): JSX.Element => {
     >
       <Flex justifyContent="space-between" alignItems="center" gap={1}>
         <Avatar
-          bgColor="t_light"
-          color="white"
-          size={avatarSize}
-          name="Aryaman Sharma"
-          src="https://bit.ly/broken-link"
+          size={50}
+          name={user.name!}
+          variant="beam"
+          colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
+          // bgColor="t_light"
+          // color="white"
+          // size={avatarSize}
+          // name="Aryaman Sharma"
+          // src="https://bit.ly/broken-link"
         />
         <Text decoration="ThreeDHighlight" noOfLines={1} fontSize={fontSize}>
-          Aryaman Sharma
+          {_.capitalize(user.name!)}
         </Text>
       </Flex>
       <Flex direction={"column"} justifyContent={"space-around"} gap={4}>
@@ -53,7 +64,7 @@ const ProfileCard = (): JSX.Element => {
             Total Sessions
           </Text>
           <Text fontWeight={"normal"} fontSize={fontSize}>
-            32
+            {user.sessionCount}
           </Text>
         </Flex>
         <Flex justifyContent={"space-between"}>
@@ -79,7 +90,7 @@ const ProfileCard = (): JSX.Element => {
             Joined
           </Text>
           <Text fontWeight={"normal"} fontSize={fontSize}>
-            11/02/2022
+            {format(new Date(user.joiningDate!), "dd MMM yyyy")}
           </Text>
         </Flex>
       </Flex>
